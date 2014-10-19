@@ -39,7 +39,7 @@ void setup(void) {
   DDRB |= 1 << 0;
 }
 
-int main() {
+int main(void) {
   // 16MHz
   clock_prescale_set(clock_div_1);
 
@@ -59,15 +59,17 @@ int main() {
     PORTB ^= _BV(0);
 
     screen_clear();
+
+	float pos2 = 1.0;
     
     /* usart_send_str("Test\r\n"); */
     for(int c = 0; c < 8; c++) {
-      float sin_pos = sinf(position_deg / 180.0 * 3.14 + 3.14 / 8 * c);
-      uint8_t sin_r = roundf((sin_pos * 4.0) + 4.0);
+      float sin_pos = sin(position_deg / 180.0 * 3.14 + 3.14 / 8 * c);
+      uint8_t sin_r = round((sin_pos * 4.0) + 4.0);
       screen_set(sin_r, c, 1, 0, 0);
 
-      float cos_pos = cosf(position_deg / 180.0 * 3.14 + 3.14 / 8 * c);
-      uint8_t cos_r = roundf((pos2 * 4.0) + 4.0);
+      float cos_pos = cos(position_deg / 180.0 * 3.14 + 3.14 / 8 * c);
+      uint8_t cos_r = round((pos2 * 4.0) + 4.0);
       screen_set(cos_r, c, 0, 0, 1);
     }
 

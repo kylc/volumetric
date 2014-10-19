@@ -7,6 +7,7 @@
 #include <util/delay.h>
 
 #include <screen.h>
+#include <holo.h>
 #include <spi.h>
 #include <usart.h>
 
@@ -54,29 +55,34 @@ int main(void) {
 
   sei();
 
+  holo_clear();
+  holo_generate_test();
   while(true) {
     // TODO: Simulate encoder '1 degree tick'
     PORTB ^= _BV(0);
+	static uint8_t t = 0;
+	t = (t+1) % HOLO_ANGS;
 
+	/* Fetch new data */
     screen_clear();
 
     /* usart_send_str("Test\r\n"); */
-    for(int c = 0; c < 8; c++) {
-      float sin_pos = sin(position_deg / 180.0 * 3.14 + 3.14 / 8 * c);
-      uint8_t sin_r = round((sin_pos * 4.0) + 4.0);
-      screen_set(sin_r, c, 0b100);
+    //for(int c = 0; c < 8; c++) {
+    //  float sin_pos = sin(position_deg / 180.0 * 3.14 + 3.14 / 8 * c);
+    //  uint8_t sin_r = round((sin_pos * 4.0) + 4.0);
+    //  screen_set(sin_r, c, 0b100);
 
-      float cos_pos = cos(position_deg / 180.0 * 3.14 + 3.14 / 8 * c);
-      uint8_t cos_r = round((cos_pos * 4.0) + 4.0);
-      screen_set(cos_r, c, 0b001);
-    }
+    //  float cos_pos = cos(position_deg / 180.0 * 3.14 + 3.14 / 8 * c);
+    //  uint8_t cos_r = round((cos_pos * 4.0) + 4.0);
+    //  screen_set(cos_r, c, 0b001);
+    //}
 
-    /* for(int i = 0; i < 8; i++) { */
-    /*   for(int j = 0; j < 8; j++) { */
-    /*     screen_set(i, i, true); */
-    /*     screen_set(7 - j, j, true); */
-    /*   } */
-    /* } */
+	/* Update screen */
+	for (int r=0; r<8; r++) {
+		for (int z=0; z<8; z++) {
+			screen_set(r, z, holo_get(r,t,z));
+		}
+	}
 
     screen_update();
   }

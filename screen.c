@@ -12,7 +12,7 @@ void screen_clear(void) {
   memset(screen, 0, sizeof(screen[0][0]) * SCREEN_COLS * SCREEN_BYTES_PER_COL);
 }
 
-void screen_set(uint8_t row, uint8_t col, uint8_t rgb) {
+void screen_set(uint8_t col, uint8_t row, uint8_t rgb) {
   int i;
   for (i=0; i<3; i++) {
     screen[col][i] &= ~(1<<row);
@@ -45,10 +45,5 @@ void screen_update(void) {
   PORTE = 7;
 
   screen_update_col();
-}
-
-void screen_from_holo(uint8_t *holodata)
-{
-
 }
 

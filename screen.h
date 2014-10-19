@@ -12,7 +12,7 @@
 extern uint8_t screen[SCREEN_COLS][SCREEN_BYTES_PER_COL];
 
 void screen_clear(void);
-void screen_set(uint8_t row, uint8_t col, uint8_t rgb);
+void screen_set(uint8_t col, uint8_t row, uint8_t rgb);
 void screen_update_col(void);
 void screen_update(void);
 

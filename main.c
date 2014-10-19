@@ -13,17 +13,22 @@
 
 #define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
 
-static uint16_t position_deg;
+static uint16_t position_deg = 0;
+static uint8_t t = 0;
 
-ISR(PCINT0_vect) {
+ISR(INT0_vect) {
   // Per-degree interrupt
-  if(PINB & _BV(0)) {
-    position_deg = position_deg + 10;
+  if(PIND & _BV(0)) {
+    position_deg = position_deg + 1;
+	t = (t+1) % 8;
     if(position_deg >= 360) {
       position_deg = 0;
     }
+    //t = position_deg / HOLO_ANGS;
   }
+}
 
+ISR(PCINT0_vect) {
   // Zero interrupt
   if(PINB & _BV(4)) {
     position_deg = 0;
@@ -37,7 +42,7 @@ void setup(void) {
   DDRE = 0x07;
 
   // TODO: PCINT0
-  DDRB |= 1 << 0;
+  DDRD |= 1 << 0;
 }
 
 int main(void) {
@@ -46,24 +51,28 @@ int main(void) {
 
   setup();
   spi_setup();
-  screen_clear();
   usart_init();
+  screen_clear();
+  holo_clear();
 
-  // PCINT0 on PB0
   PCICR |= _BV(PCIE0);
-  PCMSK0 |= _BV(PCINT0) | _BV(PCINT4);
+  PCMSK0 |= _BV(PCINT4);
+
+  // INT0 on PD0
+  EIMSK |= _BV(INT0);
 
   sei();
 
-  holo_clear();
   holo_generate_test();
+  uint16_t last_deg = position_deg;
   while(true) {
     // TODO: Simulate encoder '1 degree tick'
-    PORTB ^= _BV(0);
-	static uint8_t t = 0;
-	t = (t+1) % HOLO_ANGS;
+    PORTD ^= _BV(0);
 
 	/* Fetch new data */
+	if (last_deg > position_deg) {
+		last_deg = position_deg;
+	}
     screen_clear();
 
     /* usart_send_str("Test\r\n"); */

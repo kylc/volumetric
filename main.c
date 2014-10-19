@@ -20,7 +20,7 @@ ISR(INT0_vect) {
   // Per-degree interrupt
   if(PIND & _BV(0)) {
     position_deg = position_deg + 1;
-	t = (t+1) % 8;
+    t = (t+1) % 8;
     if(position_deg >= 360) {
       position_deg = 0;
     }
@@ -69,10 +69,10 @@ int main(void) {
     // TODO: Simulate encoder '1 degree tick'
     PORTD ^= _BV(0);
 
-	/* Fetch new data */
-	if (last_deg > position_deg) {
-		last_deg = position_deg;
-	}
+    /* Fetch new data */
+    if (last_deg > position_deg) {
+        last_deg = position_deg;
+    }
     screen_clear();
 
     /* usart_send_str("Test\r\n"); */
@@ -86,12 +86,12 @@ int main(void) {
     //  screen_set(cos_r, c, 0b001);
     //}
 
-	/* Update screen */
-	for (int r=0; r<8; r++) {
-		for (int z=0; z<8; z++) {
-			screen_set(r, z, holo_get(r,t,z));
-		}
-	}
+    /* Update screen */
+    for (int r=0; r<8; r++) {
+        for (int z=0; z<8; z++) {
+            screen_set(r, z, holo_get(r,t,z));
+        }
+    }
 
     screen_update();
   }

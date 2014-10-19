@@ -60,21 +60,17 @@ int main(void) {
   PCICR |= _BV(PCIE0);
   PCMSK0 |= _BV(PCINT4);
 
-  // INT0 on PD0
+  // INT0 on PD0 on falling edge
+  EICRA |= (1 << ISC01) | (0 << ISC00);
   EIMSK |= _BV(INT0);
 
   sei();
 
   holo_generate_test();
-  uint16_t last_deg = position_deg;
   while(true) {
     // TODO: Simulate encoder '1 degree tick'
-    PORTD ^= _BV(0);
+    PORTD ^= _BV(PIND1);
 
-    /* Fetch new data */
-    if (last_deg > position_deg) {
-        last_deg = position_deg;
-    }
     screen_clear();
 
     /* usart_send_str("Test\r\n"); */

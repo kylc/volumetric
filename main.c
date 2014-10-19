@@ -10,6 +10,7 @@
 #include <holo.h>
 #include <spi.h>
 #include <usart.h>
+#include <transmit.h>
 
 #define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
 
@@ -48,7 +49,7 @@ void setup(void) {
 }
 
 int main(void) {
-  // 16MHz
+  // 8MHz
   clock_prescale_set(clock_div_1);
 
   setup();
@@ -73,16 +74,21 @@ int main(void) {
 
     screen_clear();
 
-    /* usart_send_str("Test\r\n"); */
-    //for(int c = 0; c < 8; c++) {
-    //  float sin_pos = sin(position_deg / 180.0 * 3.14 + 3.14 / 8 * c);
-    //  uint8_t sin_r = round((sin_pos * 4.0) + 4.0);
-    //  screen_set(sin_r, c, 0b100);
+    if(usart_available()) {
+      uint8_t board_id;
 
-    //  float cos_pos = cos(position_deg / 180.0 * 3.14 + 3.14 / 8 * c);
-    //  uint8_t cos_r = round((cos_pos * 4.0) + 4.0);
-    //  screen_set(cos_r, c, 0b001);
-    //}
+      transmit_read_frame(&board_id, holodata);
+    }
+
+    /* for(int c = 0; c < 8; c++) { */
+    /*   float sin_pos = sinf(position_deg / 180.0 * 3.14 + 3.14 / 8 * c); */
+    /*   uint8_t sin_r = round((sin_pos * 4.0) + 4.0); */
+    /*   screen_set(c, sin_r, 0b100); */
+    /*  */
+    /*   float cos_pos = cos(position_deg / 180.0 * 3.14 + 3.14 / 8 * c); */
+    /*   uint8_t cos_r = round((cos_pos * 4.0) + 4.0); */
+    /*   screen_set(c, cos_r, 0b001); */
+    /* } */
 
     /* Update screen */
     for (int r=0; r<8; r++) {

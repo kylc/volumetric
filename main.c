@@ -18,14 +18,12 @@ static uint8_t t = 0;
 
 ISR(INT0_vect) {
   // Per-degree interrupt
-  if(PIND & _BV(0)) {
-    position_deg = position_deg + 1;
-    t = (t+1) % 8;
-    if(position_deg >= 360) {
-      position_deg = 0;
-    }
-    //t = position_deg / HOLO_ANGS;
+  position_deg = position_deg + 1;
+  t = (t+1) % 8;
+  if(position_deg >= 360) {
+    position_deg = 0;
   }
+  //t = position_deg / HOLO_ANGS;
 }
 
 ISR(PCINT0_vect) {
@@ -41,8 +39,12 @@ void setup(void) {
   DDRD = 0x08;
   DDRE = 0x07;
 
-  // TODO: PCINT0
-  DDRD |= 1 << 0;
+  // TODO: INT0
+  DDRD &= ~(1 << 0);
+  PORTD |= (1 << 0);
+
+  // INT0 simulated trigger
+  DDRD |= _BV(PIND1);
 }
 
 int main(void) {

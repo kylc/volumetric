@@ -46,6 +46,7 @@ TARGET = main
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC =	$(TARGET).c \
+	holodata.c \
 	screen.c \
 	spi.c \
 	usart.c \

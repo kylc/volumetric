@@ -12,30 +12,17 @@ void screen_clear(void) {
   memset(screen, 0, sizeof(screen[0][0]) * SCREEN_COLS * SCREEN_BYTES_PER_COL);
 }
 
-void screen_set(uint8_t row, uint8_t col, bool r, bool g, bool b) {
-  // TODO: This is terrible
-  if(r) {
-    screen[col][0] |= 1 << row;
-  } else {
-    screen[col][0] &= ~(1 << row);
-  }
-
-  if(g) {
-    screen[col][1] |= 1 << row;
-  } else {
-    screen[col][1] &= ~(1 << row);
-  }
-
-  if(b) {
-    screen[col][2] |= 1 << row;
-  } else {
-    screen[col][2] &= ~(1 << row);
+void screen_set(uint8_t row, uint8_t col, uint8_t rgb) {
+  int i;
+  for (i=0; i<3; i++) {
+    screen[col][i] &= ~(1<<row);
+    screen[col][i] |= (1 & (rgb>>i)) << row;
   }
 }
 
 void screen_update_col(void) {
   PORTB |= (1 << SCREEN_LATCH_PIN);
-  _delay_ms(1);
+  _delay_us(500);
   PORTB &= ~(1 << SCREEN_LATCH_PIN);
 }
 
@@ -58,5 +45,10 @@ void screen_update(void) {
   PORTE = 7;
 
   screen_update_col();
+}
+
+void screen_from_holo(uint8_t *holodata)
+{
+
 }
 

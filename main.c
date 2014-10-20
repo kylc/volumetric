@@ -20,7 +20,7 @@ static uint8_t t = 0;
 ISR(INT0_vect) {
   // Per-degree interrupt
   position_deg = position_deg + 1;
-  t = (t+1) % 8;
+  t = (t+1) % HOLO_ANGS;
   if(position_deg >= 360) {
     position_deg = 0;
   }
